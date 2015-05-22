@@ -11,8 +11,8 @@ Starting from the classes in the orc package, I wanted to find the set
 of classes that they indirectly depend on, but ignore a set of classes
 that I wanted to ignore.
 
-* *org.apache.hadoop* (but not *org.apache.hadoop.hive.*)
-* *java.*
+* *org.apache.hadoop* (but not *org.apache.hadoop.hive*)
+* *java*
 * *com.google.protobuf*
 
 That still left 16k out of the 42k classes.
@@ -26,9 +26,10 @@ sets.
 
 To run the program:
 
-```% mvn package
+````
+% mvn package
 % cd hive
 % mvn package
 % cd ..
 % java -jar target/depgraph-1.0-jar-with-dependencies.jar hive/target/bundle-1.0-jar-with-dependencies.jar
-```
+````
