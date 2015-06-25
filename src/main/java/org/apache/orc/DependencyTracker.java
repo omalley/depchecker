@@ -41,8 +41,33 @@ import org.objectweb.asm.ClassReader;
  */
 public class DependencyTracker {
 
+  static final Set<String> NON_ROOT = new HashSet<String>();
+  static {
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/FileDump");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/JsonFileDump");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcFileKeyWrapper");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcInputFormat");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcNewInputFormat");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcNewOutputFormat");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcNewSplit");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcOutputFormat");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcRawRecordMerger");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcRecordUpdater");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcSerde");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcSplit");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcAcidRowReader");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcInputFormat");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcSerde");
+  }
+
   static boolean isRoot(String name) {
-    return name.startsWith("org/apache/hadoop/hive/ql/io/orc/");
+    String cls = name;
+    int endCls = name.indexOf("$");
+    if (endCls != -1) {
+      cls = name.substring(0, endCls);
+    }
+    return name.startsWith("org/apache/hadoop/hive/ql/io/orc/") &&
+      !NON_ROOT.contains(cls);
   }
 
   static boolean isSystem(String name) {
