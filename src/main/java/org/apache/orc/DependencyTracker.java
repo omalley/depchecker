@@ -107,7 +107,7 @@ public class DependencyTracker {
       } else if (left.dependsCount < right.dependsCount) {
         return 1;
       } else {
-        return 0;
+        return left.name.compareTo(right.name);
       }
     }
 
@@ -220,7 +220,8 @@ public class DependencyTracker {
     }
 
     // sort the universe into the weight order
-    Arrays.sort(universe, new ClassInfoComparator());
+    ClassInfoComparator compare = new ClassInfoComparator();
+    Arrays.sort(universe, compare);
 
     int currentDepth = -1;
     for(ClassInfo cls: universe) {
@@ -232,11 +233,15 @@ public class DependencyTracker {
       System.out.println();
       System.out.println("  Class " + cls);
       System.out.println("    Forward:");
-      for(ClassInfo child: cls.next) {
+      ClassInfo[] sorted = cls.next.toArray(new ClassInfo[cls.next.size()]);
+      Arrays.sort(sorted, compare);
+      for(ClassInfo child: sorted) {
         System.out.println("      " + child);
       }
       System.out.println("    Backward:");
-      for(ClassInfo dep: cls.prev) {
+      sorted = cls.prev.toArray(new ClassInfo[cls.prev.size()]);
+      Arrays.sort(sorted, compare);
+      for(ClassInfo dep: sorted) {
         System.out.println("      " + dep);
       }
     }
