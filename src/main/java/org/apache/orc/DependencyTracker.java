@@ -58,6 +58,8 @@ public class DependencyTracker {
     NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcAcidRowReader");
     NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcInputFormat");
     NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcSerde");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcFileStripeMergeInputFormat");
+    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcFileStripeMergeRecordReader");
   }
 
   static boolean isRoot(String name) {
