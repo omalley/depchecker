@@ -15,19 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.orc;
+package org.apache.orc.dependency;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,42 +38,15 @@ import org.objectweb.asm.ClassReader;
  */
 public class DependencyTracker {
 
-  static final Set<String> NON_ROOT = new HashSet<String>();
-  static {
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/FileDump");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/JsonFileDump");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcFileKeyWrapper");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcInputFormat");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcNewInputFormat");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcNewOutputFormat");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcNewSplit");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcOutputFormat");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcRawRecordMerger");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcRecordUpdater");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcSerde");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcSplit");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcAcidRowReader");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcInputFormat");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/VectorizedOrcSerde");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcFileStripeMergeInputFormat");
-    NON_ROOT.add("org/apache/hadoop/hive/ql/io/orc/OrcFileStripeMergeRecordReader");
-  }
-
   static boolean isRoot(String name) {
-    String cls = name;
-    int endCls = name.indexOf("$");
-    if (endCls != -1) {
-      cls = name.substring(0, endCls);
-    }
-    return name.startsWith("org/apache/hadoop/hive/ql/io/orc/") &&
-      !NON_ROOT.contains(cls);
+    return name.startsWith("org.apache.hadoop.hive.metastore.");
   }
 
   static boolean isSystem(String name) {
-    return (name.startsWith("java/") ||
-            name.startsWith("com/google/protobuf/") ||
-            (name.startsWith("org/apache/hadoop/") &&
-                !name.startsWith("org/apache/hadoop/hive")));
+    return (name.startsWith("java.") ||
+            name.startsWith("com.google.") ||
+            (name.startsWith("org.apache.hadoop.") &&
+                !name.startsWith("org.apache.hadoop.hive.")));
   }
 
   static class ClassInfo {

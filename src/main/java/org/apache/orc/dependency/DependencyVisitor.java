@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.orc;
+package org.apache.orc.dependency;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,13 +38,14 @@ import org.objectweb.asm.signature.SignatureVisitor;
  * DependencyVisitor
  */
 public class DependencyVisitor extends ClassVisitor {
+  private Set<String> classes = new HashSet<>();
   private Map<String, Set<String> > classGraph =
     new HashMap<String, Set<String> >();
   private String src = null;
   private Set<String> current = null;
 
   public Set<String> getClasses() {
-    return classGraph.keySet();
+    return classes;
   }
 
   public Set<String> getDependencies(String clsName) {
@@ -65,11 +66,12 @@ public class DependencyVisitor extends ClassVisitor {
     public void visit(final int version, final int access, final String name,
             final String signature, final String superName,
             final String[] interfaces) {
-      src = name;
-      current = classGraph.get(name);
+      src = ProjectModel.getClassnameFromPath(name);
+      classes.add(src);
+      current = classGraph.get(src);
       if (current == null) {
         current = new HashSet<String>();
-        classGraph.put(name, current);
+        classGraph.put(src, current);
       }
       if (signature == null) {
         if (superName != null) {
@@ -307,8 +309,10 @@ public class DependencyVisitor extends ClassVisitor {
 
     // ---------------------------------------------
 
-    private void addName(final String name) {
+    private void addName(String name) {
+      name = ProjectModel.getClassnameFromPath(name);
       if (!src.equals(name)) {
+        classes.add(name);
         current.add(name);
       }
     }
