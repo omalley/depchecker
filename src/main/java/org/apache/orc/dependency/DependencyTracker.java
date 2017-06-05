@@ -43,10 +43,8 @@ public class DependencyTracker {
   }
 
   static boolean isSystem(String name) {
-    return (name.startsWith("java.") ||
-            name.startsWith("com.google.") ||
-            (name.startsWith("org.apache.hadoop.") &&
-                !name.startsWith("org.apache.hadoop.hive.")));
+    return !(name.startsWith("org.apache.hadoop.hive") ||
+        name.startsWith("org.apache.hive"));
   }
 
   static class ClassInfo {
